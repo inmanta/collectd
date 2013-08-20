@@ -1,0 +1,63 @@
+##############################################################################
+# Global                                                                     #
+#----------------------------------------------------------------------------#
+# Global settings for the daemon.                                            #
+##############################################################################
+
+Hostname    "{{ host.name | cm("hostname", "host") }}"
+FQDNLookup   true
+
+Include     "/etc/collectd.d/*.conf"
+
+##############################################################################
+# Logging                                                                    #
+#----------------------------------------------------------------------------#
+# Plugins which provide logging functions should be loaded first, so log     #
+# messages generated when loading or configuring other plugins can be        #
+# accessed.                                                                  #
+##############################################################################
+
+LoadPlugin syslog
+
+##############################################################################
+# LoadPlugin section                                                         #
+#----------------------------------------------------------------------------#
+# Lines beginning with a single `#' belong to plugins which have been built  #
+# but are disabled by default.                                               #
+#                                                                            #
+# Lines begnning with `##' belong to plugins which have not been built due   #
+# to missing dependencies or because they have been deactivated explicitly.  #
+##############################################################################
+
+LoadPlugin cpu
+LoadPlugin disk
+LoadPlugin df
+LoadPlugin entropy
+LoadPlugin interface
+LoadPlugin memory
+LoadPlugin network
+LoadPlugin ntpd
+LoadPlugin load
+
+##############################################################################
+# Plugin configuration                                                       #
+#----------------------------------------------------------------------------#
+# In this section configuration stubs for each plugin are provided. A desc-  #
+# ription of those options is available in the collectd.conf(5) manual page. #
+##############################################################################
+
+<Plugin disk>
+	Disk "/^[hs]d[a-f][0-9]?$/"
+	IgnoreSelected false
+</Plugin>
+
+<Plugin network>
+    Server "::1" "25826"
+</Plugin>
+
+<Plugin "ntpd">
+  Host "localhost"
+  Port "123"
+  ReverseLookups false
+</Plugin>
+
