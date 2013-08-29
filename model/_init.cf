@@ -35,4 +35,8 @@ end
 
 implement Agent using collectdAgent
 
+implementation collectdSensor:
+    collectd::Agent(host = host)
+end
 
+implement monitoring::MetricCollector using collectdSensor
