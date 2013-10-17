@@ -4,8 +4,12 @@
 # Global settings for the daemon.                                            #
 ##############################################################################
 
-Hostname    "{{ host.name | cm("hostname", "host") }}"
-FQDNLookup   true
+{% if host.nodename is defined %}
+Hostname    "{{ host.nodename | cm("hostname", "host") }}"
+{% else %}
+Hostname    "{{ host.name | cm("hostname", "host") }}
+{% endif %}
+FQDNLookup   false
 
 Include     "/etc/collectd.d/*.conf"
 
