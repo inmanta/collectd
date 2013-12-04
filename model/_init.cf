@@ -23,7 +23,7 @@ entity Agent extends ip::services::Client:
     """
 end
 
-implementation collectdAgent:
+implementation collectdAgent for Agent:
     cfg_file = std::ConfigFile(host = host, path = "/etc/collectd.conf", 
         content = template("collectd/collectd.conf.tmpl"), reload = true)
     cfg_dir = std::DefaultDirectory(host = host, path = "/etc/collectd.d")
@@ -35,7 +35,7 @@ end
 
 implement Agent using collectdAgent
 
-implementation collectdSensor:
+implementation collectdSensor for monitoring::MetricCollector:
     collectd::Agent(host = host)
 end
 
