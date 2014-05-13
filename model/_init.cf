@@ -25,7 +25,7 @@ end
 
 implementation collectdAgent for Agent:
     cfg_file = std::ConfigFile(host = host, path = "/etc/collectd.conf", 
-        content = template("collectd/collectd.conf.tmpl"), reload = true)
+        content = std::template("collectd/collectd.conf.tmpl"), reload = true)
     cfg_dir = std::DefaultDirectory(host = host, path = "/etc/collectd.d")
     
     pkg = std::Package(host = host, name = "collectd", state = "installed")

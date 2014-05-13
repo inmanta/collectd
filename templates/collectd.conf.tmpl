@@ -5,9 +5,9 @@
 ##############################################################################
 
 {% if host.nodename is defined %}
-Hostname    "{{ host.nodename | cm("hostname", "host") }}"
+Hostname    "{{ host.nodename | std.cm("hostname", "host") }}"
 {% else %}
-Hostname    "{{ host.name | cm("hostname", "host") }}
+Hostname    "{{ host.name | std.cm("hostname", "host") }}
 {% endif %}
 FQDNLookup   false
 
