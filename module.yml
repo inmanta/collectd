@@ -1,0 +1,10 @@
+name: collectd
+version: 0.1
+source: git@github.com:bartv/imp-collectd
+license: Apache 2.0
+author: Bart Vanbrabant <bart.vanbrabant@cs.kuleuven.be>
+requires:
+    collectd: git@github.com:bartv/imp-collectd, ">= 0.1"
+    ip: git@github.com:bartv/imp-ip, ">= 0.1"
+    monitoring: git@github.com:bartv/imp-monitoring, ">= 0.1"
+    std: git@github.com:bartv/imp-std, ">= 0.1"
