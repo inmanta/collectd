@@ -17,10 +17,26 @@
     Technical Contact: bart.vanbrabant@cs.kuleuven.be
 """
 
-enum std::os with parent "linux" as "ubuntu"
+entity Agent extends ip::services::Client:
+    """
+        A collectd server
+    """
+end
 
-enum std::os with parent "ubuntu" as "ubuntu-12.04"
-enum std::os with parent "ubuntu" as "ubuntu-12.10"
-enum std::os with parent "ubuntu" as "ubuntu-13.04"
-enum std::os with parent "ubuntu" as "ubuntu-13.10"
+implementation collectdAgent for Agent:
+    cfg_file = std::ConfigFile(host = host, path = "/etc/collectd.conf",
+        content = std::template("collectd/collectd.conf.tmpl"), reload = true)
+    cfg_dir = std::DefaultDirectory(host = host, path = "/etc/collectd.d")
 
+    pkg = std::Package(host = host, name = "collectd", state = "installed")
+    svc = std::Service(host = host, name = "collectd", state = "running", onboot = true)
+    svc.requires = [cfg_dir, cfg_file, pkg]
+end
+
+implement Agent using collectdAgent
+
+implementation collectdSensor for monitoring::MetricCollector:
+    collectd::Agent(host = host)
+end
+
+implement monitoring::MetricCollector using collectdSensor
