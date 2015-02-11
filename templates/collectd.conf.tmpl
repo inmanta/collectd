@@ -4,13 +4,8 @@
 # Global settings for the daemon.                                            #
 ##############################################################################
 
-{% if host.nodename is defined %}
-Hostname    "{{ host.nodename | std.cm("hostname", "host") }}"
-{% else %}
-Hostname    "{{ host.name | std.cm("hostname", "host") }}
-{% endif %}
+Hostname    "{{ host.name }}"
 FQDNLookup   false
-
 Include     "/etc/collectd.d/*.conf"
 
 ##############################################################################
@@ -39,7 +34,7 @@ LoadPlugin df
 LoadPlugin entropy
 LoadPlugin interface
 LoadPlugin memory
-LoadPlugin ntpd
+#LoadPlugin ntpd
 LoadPlugin load
 
 ##############################################################################
@@ -52,11 +47,5 @@ LoadPlugin load
 <Plugin disk>
 	Disk "/^[vhs]d[a-f][0-9]?$/"
 	IgnoreSelected false
-</Plugin>
-
-<Plugin "ntpd">
-  Host "localhost"
-  Port "123"
-  ReverseLookups false
 </Plugin>
 

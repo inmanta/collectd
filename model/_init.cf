@@ -23,22 +23,22 @@ entity Agent extends ip::services::Client:
 end
 
 implementation collectdAgent for Agent:
-    cfg_file = std::ConfigFile(host = host, path = "/etc/collectd.conf",
-        content = std::template("collectd/collectd.conf.tmpl"), reload = true)
-    cfg_dir = std::DefaultDirectory(host = host, path = "/etc/collectd.d")
+    cfg_file = std::ConfigFile(host=host, path="/etc/collectd.conf",
+        content=std::template("collectd/collectd.conf.tmpl"), reload=true)
+    cfg_dir = std::DefaultDirectory(host=host, path="/etc/collectd.d")
 
-    pkg = std::Package(host = host, name = "collectd", state = "installed")
-    svc = std::Service(host = host, name = "collectd", state = "running", onboot = true)
+    pkg = std::Package(host=host, name="collectd", state="installed")
+    svc = std::Service(host=host, name="collectd", state="running", onboot=true)
     svc.requires = [cfg_dir, cfg_file, pkg]
 end
 
 implementation collectdAgentUbuntu for Agent:
-    cfg_file = std::ConfigFile(host = host, path = "/etc/collectd/collectd.conf", requires=pkg,
-        content = std::template("collectd/collectd.conf.ubuntu.tmpl"), reload = true)
-    cfg_dir = std::DefaultDirectory(host = host, path = "/etc/collectd/collectd.conf.d", requires=pkg)
+    cfg_file = std::ConfigFile(host=host, path="/etc/collectd/collectd.conf", requires=pkg,
+        content=std::template("collectd/collectd.conf.ubuntu.tmpl"), reload=true)
+    cfg_dir = std::DefaultDirectory(host=host, path="/etc/collectd/collectd.conf.d", requires=pkg)
 
-    pkg = std::Package(host = host, name = "collectd", state = "installed")
-    svc = std::Service(host = host, name = "collectd", state = "running", onboot = true)
+    pkg = std::Package(host=host, name="collectd", state="installed")
+    svc = std::Service(host=host, name="collectd", state="running", onboot=true)
     svc.requires = [cfg_dir, cfg_file, pkg]
 end
 
