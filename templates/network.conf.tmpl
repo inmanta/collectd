@@ -1,0 +1,13 @@
+LoadPlugin "network"
+
+<Plugin "network">
+    {% if outputs | std.count %}Listen "{{ host.ip }}"
+    {% endif %}
+
+    {% for inp in inputs | std.key_sort("host.ip") %}Server "{{ inp.host.ip }}"
+    {% endfor %}
+
+    {% if forward %}Forward true
+    {% endif %}
+</Plugin>
+
