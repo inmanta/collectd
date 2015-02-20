@@ -4,6 +4,6 @@ name: collectd
 source: git@git.impera.io:modules/collectd
 version: 0.2b2
 requires:
-    ip: git@github.com:impera-io/ip, ">= 0.1"
+    ip: git@git.impera.io:modules/ip, ">= 0.1"
     monitoring: git@git.impera.io:modules/monitoring, ">= 0.1"
-    std: git@github.com:impera-io/std, ">= 0.1"
+    std: git@git.impera.io:modules/std, ">= 0.1"
