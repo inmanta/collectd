@@ -40,12 +40,12 @@ end
 NetworkInput inputs [0:] -- [0:] NetworkOutput outputs
 
 implementation collectdAgent for Agent:
-    cfg_file = std::ConfigFile(host=host, path="/etc/collectd.conf",
+    cfg_file = std::ConfigFile(host=host, path="/etc/collectd.conf", requires=pkg,
         content=std::template("collectd/collectd.conf.tmpl"), reload=true)
-    cfg_dir = std::DefaultDirectory(host=host, path="/etc/collectd.d")
+    cfg_dir = std::DefaultDirectory(host=host, path="/etc/collectd.d", requires=pkg)
 
     network_cfg = std::ConfigFile(host=host, path="/etc/collectd.d/network.conf", reload=true,
-                                  content=std::template("collectd/network.conf.tmpl"))
+                                  content=std::template("collectd/network.conf.tmpl"), requires=pkg)
 
     pkg = std::Package(host=host, name="collectd", state="installed")
     svc = std::Service(host=host, name="collectd", state="running", onboot=true)
