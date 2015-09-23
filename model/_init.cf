@@ -25,6 +25,8 @@ entity Agent extends NetworkInput, NetworkOutput:
     bool forward=false
 end
 
+#Agent agent [1] -- [1] std::File cfg_dir
+
 entity NetworkInput extends ip::services::Server:
     """
         A collectd network input: accepts metrics using the collectd network protocol.
@@ -37,7 +39,16 @@ entity NetworkOutput extends ip::services::BaseClient:
     """
 end
 
+entity Plugin:
+    """
+        A collectd plugin that collects metrics
+    """
+end
+
+Plugin plugins [0:] -- [1] Agent agent 
+
 NetworkInput inputs [0:] -- [0:] NetworkOutput outputs
+
 
 implementation collectdAgent for Agent:
     cfg_file = std::ConfigFile(host=host, path="/etc/collectd.conf", requires=pkg,
@@ -65,3 +76,18 @@ end
 implement Agent using collectdAgent when std::familyof(host.os, "rhel") or std::familyof(host.os, "fedora")
 implement Agent using collectdAgentUbuntu when std::familyof(host.os, "ubuntu")
 
+
+entity Varnish extends Plugin:
+    """
+        Enable the Varnish collectd plugin
+    """
+end
+
+
+implementation varnish for Varnish:
+#make path rel to agent.cfg_dir
+     cfg_file = std::ConfigFile(host=agent.host, path="/etc/collectd.d/varnish.conf",
+        content=std::template("collectd/varnish.conf.tmpl"), reload=true)
+end
+
+implement Varnish using varnish
