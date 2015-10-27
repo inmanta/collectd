@@ -86,8 +86,9 @@ end
 
 implementation varnish for Varnish:
 #make path rel to agent.cfg_dir
-     cfg_file = std::ConfigFile(host=agent.host, path="/etc/collectd.d/varnish.conf",
-        content=std::template("collectd/varnish.conf.tmpl"), reload=true)
+    cfg_file = std::ConfigFile(host=agent.host, path="/etc/collectd.d/varnish.conf",
+                               content=std::template("collectd/varnish.conf.tmpl"), reload=true)
+    pkg = std::Package(host=agent.host, name="collectd-varnish", state="installed")
 end
 
 implement Varnish using varnish
