@@ -1,0 +1,13 @@
+LoadPlugin "write_graphite"
+<Plugin write_graphite>
+    <Node "graphite">
+        Host "{{ carbon.host.ip }}"
+        Port "2003"
+        Protocol "tcp"
+        Prefix "{{ prefix }}"
+        Postfix "{{ postfix }}"
+        EscapeCharacter "{{ escape_character }}"
+    </Node>
+</Plugin>
+
+

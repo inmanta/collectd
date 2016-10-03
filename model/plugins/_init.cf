@@ -1,0 +1,146 @@
+"""
+    Copyright 2016 Inmanta
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+    Contact: code@inmanta.com
+"""
+
+import collectd
+
+entity CPU extends Plugin:
+    """
+        Collectd CPU plugin.
+
+        :param reportbystate When set to true, the default, reports per-state metrics, e.g. "system", "user" and "idle".
+                             When set to false, aggregates (sums) all non-idle states into one "active" metric.
+        :param reportbycpu When set to true, the default, reports per-CPU (per-core) metrics. When set to false, instead of
+                           reporting metrics for individual CPUs, only a global sum of CPU states is emitted.
+        :param valuespercentage This option is only considered when both, ReportByCpu and ReportByState are set to true. In
+                                this case, by default, metrics will be reported as Jiffies. By setting this option to true,
+                                you can request percentage values in the un-aggregated (per-CPU, per-state) mode as well.
+    """
+    bool reportbystate=true
+    bool reportbycpu=true
+    bool valuespercentage=false
+end
+
+implementation cpu for CPU:
+    self.name="cpu"
+    self.config=std::template("collectd/plugins/cpu.conf.tmpl")
+end
+implement CPU using cpu, collectd::loadPlugin
+
+
+entity WriteHttp extends Plugin:
+    """
+        Write http plugin. The default format is JSON.
+    """
+    string url
+    string format="JSON"
+end
+
+implementation writehttp for WriteHttp:
+    self.name="write_http"
+    self.config=std::template("collectd/write_http.conf.tmpl")
+end
+implement WriteHttp using writehttp
+
+"""
+  class { 'collectd::plugin::df':
+    fstypes          => $lma_collector::params::fstypes,
+    valuespercentage => true,
+  }
+
+  $block_devices = join(split($::blockdevices, ','), '|')
+  class { 'collectd::plugin::disk':
+    disks => [ "/^${ block_devices }$/" ],
+  }
+
+  class { 'collectd::plugin::interface':
+    interfaces => reject(grep(split($::interfaces, ','), '^[a-z0-9]+$'), '^lo$')
+  }
+
+  class { 'collectd::plugin::load':
+  }
+
+  class { 'collectd::plugin::memory':
+  }
+
+  class { 'collectd::plugin::processes':
+    processes       => $processes,
+    process_matches => $process_matches,
+  }
+
+  class { 'collectd::plugin::swap':
+  }
+
+  class { 'collectd::plugin::users':
+  }"""
+
+entity Df extends Plugin:
+    """
+        Disk free plugin
+
+        :param device Select partitions based on the devicename.
+        :param mountpoint Select partitions based on the mountpoint.
+        :param fstype Select partitions based on the filesystem type.
+        :param ignoreselected Invert the selection: If set to true, all partitions except the ones that match any one of the
+                              criteria are collected. By default only selected partitions are collected if a selection is made.
+                              If no selection is configured at all, all partitions are selected.
+        :param reportbydevice Report using the device name rather than the mountpoint. i.e. with this false, (the default),
+                              it will report a disk as "root", but with it true, it will be "sda1" (or whichever).
+        :param reportinodes Enables or disables reporting of free, reserved and used inodes. Defaults to inode collection being
+                            disabled. Enable this option if inodes are a scarce resource for you, usually because many small
+                            files are stored on the disk. This is a usual scenario for mail transfer agents and web caches.
+        :param valuesabsolute Enables or disables reporting of free and used disk space in 1K-blocks. Defaults to true.
+        :param valuespercentage Enables or disables reporting of free and used disk space in percentage. Defaults to false. 
+                                This is useful for deploying collectd on the cloud, where machines with different disk size may
+                                exist. Then it is more practical to configure thresholds based on relative disk size.
+    """
+    string device
+    list mountpoints
+    list fstypes
+    bool ignoreselected=false
+    bool reportbydevice=false
+    bool reportinodes=true
+    bool reportreserved=true
+    bool valuesabsolute=true
+    bool valuespercentage=false
+end
+
+implementation df for Df:
+
+end
+implement Df using df
+
+
+entity Disk extends Plugin:
+
+end
+
+implementation disk for Disk:
+
+end
+implement Disk using disk
+
+
+entity Interface extends Plugin:
+
+end
+
+implementation interface for Interface:
+
+end
+implement Interface using interface
+
