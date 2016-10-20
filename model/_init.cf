@@ -67,8 +67,6 @@ end
 
 Plugin plugins [0:] -- [1] Agent agent 
 
-
-
 NetworkInput inputs [0:] -- [0:] NetworkOutput outputs
 
 implementation collectdAgent for Agent:
@@ -88,9 +86,12 @@ implementation collectdAgent for Agent:
 end
 
 implementation collectdAgentUbuntu for Agent:
+    self._plugin_config_path = "/etc/collectd/collectd.conf.d"
+    self._service_name = "collectd"
+
     cfg_file = std::ConfigFile(host=host, path="/etc/collectd/collectd.conf", requires=pkg,
         content=std::template("collectd/collectd.conf.ubuntu.tmpl"), reload=true)
-    cfg_dir = std::DefaultDirectory(host=host, path="/etc/collectd/collectd.conf.d", requires=pkg)
+    cfg_dir = std::DefaultDirectory(host=host, path=self._plugin_config_path, requires=pkg)
 
     pkg = std::Package(host=host, name="collectd", state="installed")
     svc = std::Service(host=host, name="collectd", state="running", onboot=true)

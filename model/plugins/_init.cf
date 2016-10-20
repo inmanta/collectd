@@ -52,9 +52,9 @@ end
 
 implementation writehttp for WriteHttp:
     self.name="write_http"
-    self.config=std::template("collectd/write_http.conf.tmpl")
+    self.config=std::template("collectd/plugins/write_http.conf.tmpl")
 end
-implement WriteHttp using writehttp
+implement WriteHttp using writehttp, collectd::loadPlugin
 
 """
   class { 'collectd::plugin::df':
