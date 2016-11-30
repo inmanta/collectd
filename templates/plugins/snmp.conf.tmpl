@@ -1,0 +1,22 @@
+<Plugin snmp>
+    {% for d in data | sort(attribute="name") -%}
+    <Data "{{d.name}}">
+        Type "{{d.type}}"
+        Table {{d.table | lower}}
+        Instance "{{d.instance}}"
+        Values {% for v in d.values | sort %}"{{ v }}" {%endfor%}
+    </Data>
+    {%-endfor%}
+    
+    {% for h in hosts -%}
+    <Host "{{h.hostname}}">
+        Address "{{h.ip}}"
+        Version {{h.version}}
+        Community "{{h.community}}"
+        Collect {% for c in h.collect | sort(attribute="name") %}"{{ c.name }}" {%endfor%}
+        Interval {{h.interval}}
+    </Host>
+    {% endfor %}
+</Plugin>
+
+

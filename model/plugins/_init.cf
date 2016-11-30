@@ -17,6 +17,7 @@
 """
 
 import collectd
+import ip
 
 entity CPU extends Plugin:
     """
@@ -55,38 +56,6 @@ implementation writehttp for WriteHttp:
     self.config=std::template("collectd/plugins/write_http.conf.tmpl")
 end
 implement WriteHttp using writehttp, collectd::loadPlugin
-
-"""
-  class { 'collectd::plugin::df':
-    fstypes          => $lma_collector::params::fstypes,
-    valuespercentage => true,
-  }
-
-  $block_devices = join(split($::blockdevices, ','), '|')
-  class { 'collectd::plugin::disk':
-    disks => [ "/^${ block_devices }$/" ],
-  }
-
-  class { 'collectd::plugin::interface':
-    interfaces => reject(grep(split($::interfaces, ','), '^[a-z0-9]+$'), '^lo$')
-  }
-
-  class { 'collectd::plugin::load':
-  }
-
-  class { 'collectd::plugin::memory':
-  }
-
-  class { 'collectd::plugin::processes':
-    processes       => $processes,
-    process_matches => $process_matches,
-  }
-
-  class { 'collectd::plugin::swap':
-  }
-
-  class { 'collectd::plugin::users':
-  }"""
 
 entity Df extends Plugin:
     """
@@ -144,3 +113,37 @@ implementation interface for Interface:
 end
 implement Interface using interface
 
+entity SNMP extends Plugin:
+
+end
+
+implementation snmp for SNMP:
+    self.name = "snmp"
+    self.config=std::template("collectd/plugins/snmp.conf.tmpl")
+end
+implement SNMP using snmp, collectd::loadPlugin
+
+entity SNMPData:
+    string name
+    string type
+    bool table=false
+    string instance
+    string[] values
+    number scale=1.0
+end
+implement SNMPData using std::none
+
+index SNMPData(name)
+
+entity SNMPHost:
+    number version
+    string community
+    string hostname
+    ip::ip ip
+    number interval=10
+end
+implement SNMPHost using std::none
+
+SNMP.data [0:] -- SNMPData
+SNMP.hosts [0:] -- SNMPHost
+SNMPHost.collect [1:] -- SNMPData
