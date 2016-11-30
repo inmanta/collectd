@@ -135,7 +135,7 @@ implement Type using std::none
 implementation customTypes for Agent:
     std::ConfigFile(host=host, path="{{ _plugin_config_path }}/types.db", content=std::template("collectd/types.db.tmpl"))
     std::ConfigFile(host=host, path="{{ _plugin_config_path }}/custom_types.conf",
-                    content=std::template("collectd/custom_types.conf.tmpl"))
+                    content=std::template("collectd/custom_types.tmpl"))
 end
 
 implement Agent using customTypes
