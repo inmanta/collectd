@@ -147,3 +147,15 @@ implement SNMPHost using std::none
 SNMP.data [0:] -- SNMPData
 SNMP.hosts [0:] -- SNMPHost
 SNMPHost.collect [1:] -- SNMPData
+
+entity StatsD extends Plugin:
+
+end
+
+implementation statsd for StatsD:
+    self.name = "statsd"
+    self.config = std::template("collectd/plugins/statsd.conf.tmpl")
+end
+
+implement StatsD using statsd, collectd::loadPlugin
+
